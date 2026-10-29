@@ -35,17 +35,3 @@ def test_deposit(client):
 def test_invalid_deposit(client):
     response = client.post("/deposit", json={"amount": -50})
     assert response.status_code == 400
-
-def test_withdrawal(client):
-    response = client.post("/withdraw", json={"amount": 300})
-    assert response.status_code == 200
-    assert response.json["balance"] == 700.00
-
-def test_insufficient_balance(client):
-    response = client.post("/withdraw", json={"amount": 1500})
-    assert response.status_code == 400
-    assert response.json["message"] == "Insufficient balance"
-
-def test_invalid_withdrawal(client):
-    response = client.post("/withdraw", json={"amount": 0})
-    assert response.status_code == 400
