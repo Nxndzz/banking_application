@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: student-k8s-demo
-          image: nandakrishnanm/student-k8s-demo/28b5891
+          image: nandakrishnanm/student-k8s-demo/bbaf3a4
           ports:
             - containerPort: 5001
           readinessProbe:
