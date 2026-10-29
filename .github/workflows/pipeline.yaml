@@ -1,6 +1,4 @@
-
 name: Banking Application CI-CD
-
 on:
   push:
     branches: [main]
@@ -29,7 +27,7 @@ jobs:
       - name: Run tests
         run: python -m pytest -v
 
-  build:
+  docker:
     needs: test
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
@@ -47,31 +45,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/banking_app:${{ github.sha }}
-
-  deploy:
-    needs: build
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v4
-
-      - name: Configure Kubernetes
-        env:
-          KUBE_CONFIG_B64: ${{ secrets.KUBE_CONFIG_B64 }}
-        run: |
-          mkdir -p "$HOME/.kube"
-          echo "$KUBE_CONFIG_B64" | base64 --decode > "$HOME/.kube/config"
-          chmod 600 "$HOME/.kube/config"
-          kubectl get nodes
-
-      - name: Deploy exact image for this push
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          IMAGE="${DOCKERHUB_USERNAME}/student-k8s-demo:${IMAGE_TAG}"
-          sed "s|IMAGE_PLACEHOLDER|${IMAGE}|g" \
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/student-k8s-demo:${{ github.sha }}
