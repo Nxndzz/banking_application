@@ -47,7 +47,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/student-k8s-demo:${{ github.sha }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/banking_app:${{ github.sha }}
 
   deploy:
     needs: build
@@ -75,7 +75,3 @@ jobs:
         run: |
           IMAGE="${DOCKERHUB_USERNAME}/student-k8s-demo:${IMAGE_TAG}"
           sed "s|IMAGE_PLACEHOLDER|${IMAGE}|g" \
-            k8s/deployment.yaml > /tmp/deployment.yaml
-          kubectl apply -f /tmp/deployment.yaml
-          kubectl apply -f k8s/service.yaml
-          kubectl rollout status deployment/student-k8s-demo --timeout=180s
