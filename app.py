@@ -54,31 +54,3 @@ def deposit():
     balance = round(balance + amount, 2)
     return jsonify(message="Deposit successful", balance=balance), 200
 
-
-@app.route("/withdraw", methods=["POST"])
-def withdraw():
-    global balance
-
-    data = request.get_json(silent=True)
-    amount = request.form.get("amount") if data is None else data.get("amount")
-
-    try:
-        if isinstance(amount, bool):
-            raise ValueError
-        amount = float(amount)
-    except (ValueError, TypeError):
-        return jsonify(message="Invalid withdrawal amount"), 400
-
-    if amount <= 0:
-        return jsonify(message="Amount must be positive"), 400
-    
-
-    if amount > balance:
-        return jsonify(message="Insufficient balance"), 400
-
-    balance = round(balance - amount, 2)
-    return jsonify(message="Withdrawal successful", balance=balance), 200
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
